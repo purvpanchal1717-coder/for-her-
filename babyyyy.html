@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Chahna 🤍</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blush:#ffe7ee;
+    --cream:#fff8f6;
+    --rose:#e75480;
+    --deep-rose:#c23764;
+    --plum:#5a2a3a;
+    --gold:#e8b4a2;
+    --white:#ffffff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{
+    height:100%;
+    font-family:'Quicksand',sans-serif;
+    background:linear-gradient(160deg,var(--cream) 0%,var(--blush) 55%,#ffd9e6 100%);
+    color:var(--plum);
+    overflow:hidden;
+  }
+  .stage{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+  }
+  /* floating ambient hearts */
+  .ambient{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    overflow:hidden;
+  }
+  .ambient span{
+    position:absolute;
+    bottom:-10%;
+    font-size:18px;
+    color:var(--rose);
+    opacity:0.35;
+    animation:floatUp linear infinite;
+  }
+  @keyframes floatUp{
+    0%{transform:translateY(0) rotate(0deg);opacity:0;}
+    10%{opacity:0.4;}
+    100%{transform:translateY(-110vh) rotate(30deg);opacity:0;}
+  }
+
+  .scene{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:6vh 8vw;
+    z-index:2;
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(24px);
+    transition:opacity 0.7s ease, transform 0.7s ease, visibility 0.7s;
+  }
+  .scene.active{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(0);
+  }
+
+  .eyebrow{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:1.1rem;
+    letter-spacing:0.08em;
+    color:var(--rose);
+    margin-bottom:0.6rem;
+  }
+  h1{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:600;
+    font-size:clamp(2.1rem,5vw,3.4rem);
+    color:var(--deep-rose);
+    margin-bottom:1.1rem;
+    line-height:1.15;
+  }
+  p.body-text{
+    max-width:560px;
+    font-size:clamp(1rem,2vw,1.18rem);
+    line-height:1.7;
+    color:#7a4356;
+    margin-bottom:2.2rem;
+    font-weight:500;
+  }
+
+  .btn-row{
+    display:flex;
+    gap:1.2rem;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  button{
+    font-family:'Quicksand',sans-serif;
+    font-weight:700;
+    font-size:1rem;
+    border:none;
+    padding:0.9rem 2.1rem;
+    border-radius:50px;
+    cursor:pointer;
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  button:active{transform:scale(0.96);}
+  .btn-primary{
+    background:linear-gradient(135deg,var(--rose),var(--deep-rose));
+    color:#fff;
+    box-shadow:0 8px 20px rgba(199,55,100,0.35);
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(199,55,100,0.45);}
+  .btn-secondary{
+    background:#fff;
+    color:var(--deep-rose);
+    border:2px solid var(--rose);
+  }
+  .btn-secondary:hover{background:var(--rose);color:#fff;}
+
+  .cat-emoji{
+    font-size:3.4rem;
+    margin-bottom:0.6rem;
+    animation:wiggle 1.6s ease-in-out infinite;
+  }
+  @keyframes wiggle{
+    0%,100%{transform:rotate(-4deg);}
+    50%{transform:rotate(4deg);}
+  }
+
+  /* --- Envelope scene --- */
+  .envelope-wrap{
+    position:relative;
+    width:280px;
+    height:190px;
+    cursor:pointer;
+    margin-bottom:2rem;
+    perspective:1200px;
+  }
+  .envelope-body{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(145deg,#ffd3e0,#ffb9cf);
+    border-radius:10px;
+    box-shadow:0 18px 40px rgba(199,55,100,0.25);
+  }
+  .envelope-flap{
+    position:absolute;
+    top:0;left:0;right:0;
+    height:0;
+    border-left:140px solid transparent;
+    border-right:140px solid transparent;
+    border-top:105px solid #ffc2d4;
+    transform-origin:top;
+    transition:transform 0.9s cubic-bezier(.68,-0.4,.27,1.4);
+    z-index:3;
+  }
+  .envelope-wrap.open .envelope-flap{
+    transform:rotateX(180deg);
+  }
+  .envelope-heart{
+    position:absolute;
+    top:40%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:1.6rem;
+    z-index:4;
+    color:var(--deep-rose);
+  }
+  .letter-paper{
+    position:absolute;
+    left:12px;right:12px;
+    bottom:8px;
+    top:40px;
+    background:var(--cream);
+    border-radius:6px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.12);
+    transform:translateY(0);
+    transition:transform 0.9s ease 0.3s, opacity 0.9s ease 0.3s;
+    z-index:2;
+  }
+  .envelope-wrap.open .letter-paper{
+    transform:translateY(-130px) scale(1.05);
+  }
+  .envelope-hint{
+    font-size:0.9rem;
+    color:#a85a72;
+    font-style:italic;
+    font-family:'Cormorant Garamond',serif;
+  }
+
+  .letter-scene{
+    max-width:640px;
+  }
+  .letter-box{
+    background:var(--white);
+    border-radius:16px;
+    padding:3rem 2.8rem;
+    box-shadow:0 30px 60px rgba(199,55,100,0.28), 0 10px 24px rgba(199,55,100,0.16);
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.2rem;
+    line-height:1.85;
+    color:var(--plum);
+    text-align:center;
+    max-width:600px;
+    max-height:68vh;
+    overflow-y:auto;
+    opacity:0;
+    transform:translateY(16px);
+    animation:letterFadeIn 1s ease forwards, letterFloat 6s ease-in-out infinite 1.2s;
+    animation-delay:0.2s, 0s;
+  }
+  .letter-box p{margin-bottom:1.1rem;}
+  .letter-box p:last-of-type{margin-bottom:0;}
+  @keyframes letterFadeIn{
+    to{opacity:1;transform:translateY(0);}
+  }
+  @keyframes letterFloat{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-8px);}
+  }
+  .letter-sign{
+    margin-top:1.2rem;
+    font-style:italic;
+    color:var(--rose);
+  }
+
+  /* memory wall */
+  .wall-title{display:none;}
+  .wall-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1.6rem;
+    max-width:720px;
+    margin-bottom:2rem;
+  }
+  .polaroid{
+    background:#fff;
+    padding:10px 10px 26px 10px;
+    border-radius:4px;
+    box-shadow:0 10px 24px rgba(199,55,100,0.2);
+  }
+  .polaroid:nth-child(odd){transform:rotate(-4deg);}
+  .polaroid:nth-child(even){transform:rotate(3deg);}
+  .polaroid:hover{transform:rotate(0deg) scale(1.04);transition:0.3s;}
+  .photo-slot{
+    width:100%;
+    aspect-ratio:1/1;
+    background:repeating-linear-gradient(45deg,#ffeef3,#ffeef3 10px,#fff5f8 10px,#fff5f8 20px);
+    border:2px dashed #f2a9c1;
+    border-radius:3px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:0.78rem;
+    color:#c9799a;
+    text-align:center;
+    padding:0.4rem;
+  }
+
+  /* bouquet scene */
+  .bouquet-svg{
+    width:min(70vw,320px);
+    margin-bottom:1.6rem;
+    animation:sway 4s ease-in-out infinite;
+    transform-origin:bottom center;
+  }
+  @keyframes sway{
+    0%,100%{transform:rotate(-1.5deg);}
+    50%{transform:rotate(1.5deg);}
+  }
+  .note-card{
+    background:#fff;
+    padding:1.1rem 2.2rem;
+    border-radius:10px;
+    box-shadow:0 10px 24px rgba(199,55,100,0.22);
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:1.4rem;
+    color:var(--deep-rose);
+    margin-top:0.6rem;
+  }
+
+  .whiteout{
+    position:fixed;
+    inset:0;
+    background:#fff;
+    opacity:0;
+    pointer-events:none;
+    z-index:20;
+    transition:opacity 1.3s ease;
+  }
+  .whiteout.show{opacity:1;}
+
+  .final-scene{
+    background:linear-gradient(160deg,#fffdfc 0%,#fff2f6 100%);
+  }
+  .final-heart{
+    font-size:2.2rem;
+    margin-bottom:0.6rem;
+    opacity:0;
+    animation:finalLine 0.9s ease forwards;
+    animation-delay:0.2s;
+  }
+  .final-eyebrow{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    color:var(--rose);
+    font-size:1.15rem;
+    margin-bottom:1.2rem;
+    opacity:0;
+    animation:finalLine 0.9s ease forwards;
+    animation-delay:0.6s;
+  }
+  .final-line{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(1.1rem,2.4vw,1.4rem);
+    color:var(--plum);
+    max-width:560px;
+    line-height:1.7;
+    margin-bottom:0.5rem;
+    opacity:0;
+    animation:finalLine 0.9s ease forwards;
+  }
+  .final-line.big{
+    font-size:clamp(1.3rem,3vw,1.7rem);
+    color:var(--deep-rose);
+    font-weight:500;
+    margin-top:0.8rem;
+  }
+  @keyframes finalLine{
+    to{opacity:1;transform:translateY(0);}
+    from{transform:translateY(10px);}
+  }
+
+  .progress-dots{
+    position:fixed;
+    bottom:22px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:8px;
+    z-index:5;
+  }
+  .progress-dots span{
+    width:7px;height:7px;border-radius:50%;
+    background:#f3c1d2;
+  }
+  .progress-dots span.active{background:var(--deep-rose);width:20px;border-radius:6px;transition:0.3s;}
+
+  @media (max-width:560px){
+    .wall-grid{grid-template-columns:repeat(2,1fr);}
+    .envelope-wrap{width:220px;height:150px;}
+    .envelope-flap{border-left-width:110px;border-right-width:110px;border-top-width:82px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient" id="ambient"></div>
+
+<div class="stage">
+
+  <!-- 1. Landing -->
+  <section class="scene active" id="scene-landing">
+    <div class="eyebrow">for Chahna</div>
+    <h1>I made something for you. ❤️</h1>
+    <p class="body-text">It isn't perfect... but every line of code, every animation, and every little detail was made while thinking about you. So... will you let me show you something from my heart?</p>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="goTo('scene-envelope')">Yes</button>
+      <button class="btn-secondary" onclick="goTo('scene-no')">No</button>
+    </div>
+  </section>
+
+  <!-- 2. No page -->
+  <section class="scene" id="scene-no">
+    <div class="cat-emoji">😾</div>
+    <h1>Excuse me?!</h1>
+    <p class="body-text">I spent hours making this just for you... and you're seriously pressing "No"? I know you're joking... now go back and make the correct decision. 😤❤️</p>
+    <button class="btn-primary" onclick="goTo('scene-landing')">Okay okay... I'll open it 😭</button>
+  </section>
+
+  <!-- 3. Envelope -->
+  <section class="scene" id="scene-envelope">
+    <div class="eyebrow">open when ready</div>
+    <h1 style="margin-bottom:1.4rem;">A little something for you</h1>
+    <div class="envelope-wrap" id="envelopeWrap" onclick="openEnvelope()">
+      <div class="envelope-flap"></div>
+      <div class="letter-paper"></div>
+      <div class="envelope-body"></div>
+      <div class="envelope-heart">🤍</div>
+    </div>
+    <div class="envelope-hint">tap the envelope to open it</div>
+    <div class="btn-row" id="envelopeNextRow" style="display:none;margin-top:1.8rem;">
+      <button class="btn-primary" onclick="goTo('scene-letter')">Read the letter</button>
+    </div>
+  </section>
+
+  <!-- 4. Letter -->
+  <section class="scene letter-scene" id="scene-letter">
+    <div class="letter-box">
+      <p>Happy Girlfriend's Day, My Love. ❤️</p>
+      <p>You told me you didn't want any gift, just a wish. So here's my wish... wrapped in a few words.</p>
+      <p>Thank you for being the most beautiful part of my life. Before you, I never knew one person could become so special that even the smallest moments feel unforgettable.</p>
+      <p>Thank you for your smile, your care, your endless patience with my overthinking, and for making me feel at peace just by being with you.</p>
+      <p>I know I'm not perfect. I make silly mistakes, I overthink, and sometimes my brain works against me. But one thing has never changed and never will...</p>
+      <p>I love you.</p>
+      <p>Today is Girlfriend's Day, but honestly, I feel like I'm the lucky one. Thank you for choosing me, trusting me, and letting me call you mine.</p>
+      <p>No matter what tomorrow looks like, I want you to remember one thing...</p>
+      <p>You'll always have me.<br>To make you laugh.<br>To annoy you.<br>To celebrate your happiest days.<br>And to quietly hold your hand whenever life feels heavy.</p>
+      <p>I hope one day, when we look back at all these little memories, we'll smile and realise they became our favourite chapters.</p>
+      <p>Happy Girlfriend's Day, my love.</p>
+      <p class="letter-sign">I love you. Always. ❤️</p>
+    </div>
+    <div class="btn-row" style="margin-top:2.2rem;">
+      <button class="btn-primary" onclick="goTo('scene-wall')">Next</button>
+    </div>
+  </section>
+
+  <!-- 5. Memory wall -->
+  <section class="scene" id="scene-wall">
+    <div class="wall-grid">
+      <div class="polaroid"><div class="photo-slot">add photo here</div></div>
+      <div class="polaroid"><div class="photo-slot">add photo here</div></div>
+      <div class="polaroid"><div class="photo-slot">add photo here</div></div>
+      <div class="polaroid"><div class="photo-slot">add photo here</div></div>
+      <div class="polaroid"><div class="photo-slot">add photo here</div></div>
+      <div class="polaroid"><div class="photo-slot">add photo here</div></div>
+    </div>
+    <button class="btn-primary" onclick="goTo('scene-bouquet')">Next</button>
+  </section>
+
+  <!-- 6. Bouquet -->
+  <section class="scene" id="scene-bouquet">
+    <svg class="bouquet-svg" viewBox="0 0 260 300" xmlns="http://www.w3.org/2000/svg">
+      <line x1="130" y1="180" x2="130" y2="290" stroke="#c98a63" stroke-width="6" stroke-linecap="round"/>
+      <line x1="130" y1="200" x2="100" y2="270" stroke="#c98a63" stroke-width="5" stroke-linecap="round"/>
+      <line x1="130" y1="210" x2="160" y2="275" stroke="#c98a63" stroke-width="5" stroke-linecap="round"/>
+      <g>
+        <circle cx="80" cy="120" r="26" fill="#f7a8c4"/>
+        <circle cx="60" cy="150" r="22" fill="#f28cae"/>
+        <circle cx="110" cy="150" r="24" fill="#f7a8c4"/>
+        <circle cx="150" cy="115" r="27" fill="#f28cae"/>
+        <circle cx="180" cy="145" r="23" fill="#f7a8c4"/>
+        <circle cx="130" cy="90" r="25" fill="#e75480"/>
+        <circle cx="130" cy="150" r="20" fill="#fff0f4"/>
+        <circle cx="80" cy="120" r="9" fill="#fff5f8"/>
+        <circle cx="150" cy="115" r="9" fill="#fff5f8"/>
+        <circle cx="60" cy="150" r="8" fill="#ffe3ec"/>
+        <circle cx="180" cy="145" r="8" fill="#ffe3ec"/>
+        <circle cx="130" cy="90" r="9" fill="#ffd6e2"/>
+      </g>
+      <path d="M40 175 Q130 220 220 175 L210 195 Q130 235 50 195 Z" fill="#ffc2d4"/>
+    </svg>
+    <div class="note-card">"I love you." 🤍</div>
+    <button class="btn-primary" style="margin-top:2rem;" onclick="goToFinal()">Next</button>
+  </section>
+
+  <!-- 7. Final -->
+  <section class="scene final-scene" id="scene-final">
+    <div class="final-heart">❤️</div>
+    <div class="final-eyebrow">One last thing...</div>
+    <p class="final-line" style="animation-delay:1.0s;">Thank you for coming into my life.</p>
+    <p class="final-line" style="animation-delay:1.4s;">Thank you for choosing me.</p>
+    <p class="final-line" style="animation-delay:1.8s;">Thank you for loving me.</p>
+    <p class="final-line" style="animation-delay:2.2s;">You make ordinary days feel special, and every memory with you becomes one of my favourites.</p>
+    <p class="final-line" style="animation-delay:2.6s;">I don't know what I did to deserve someone like you... but I'm grateful every single day that I get to call you mine.</p>
+    <p class="final-line big" style="animation-delay:3.2s;">Happy Girlfriend's Day, my love.</p>
+    <p class="final-line big" style="animation-delay:3.7s;">I love you. Always. ❤️</p>
+  </section>
+
+</div>
+
+<div class="whiteout" id="whiteout"></div>
+<div class="progress-dots" id="dots"></div>
+
+<script>
+  const order = ['scene-landing','scene-envelope','scene-letter','scene-wall','scene-bouquet','scene-final'];
+  const dotsEl = document.getElementById('dots');
+  order.forEach((id,i)=>{
+    const d = document.createElement('span');
+    if(id==='scene-landing') d.classList.add('active');
+    d.dataset.id = id;
+    dotsEl.appendChild(d);
+  });
+
+  function updateDots(id){
+    if(!order.includes(id)) return;
+    [...dotsEl.children].forEach(d=>{
+      d.classList.toggle('active', d.dataset.id===id);
+    });
+  }
+
+  function goTo(id){
+    document.querySelectorAll('.scene').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    updateDots(id);
+  }
+
+  function goToFinal(){
+    const overlay = document.getElementById('whiteout');
+    overlay.classList.add('show');
+    setTimeout(()=>{
+      goTo('scene-final');
+      setTimeout(()=>{ overlay.classList.remove('show'); }, 250);
+    }, 1300);
+  }
+
+  function openEnvelope(){
+    const wrap = document.getElementById('envelopeWrap');
+    if(wrap.classList.contains('open')) return;
+    wrap.classList.add('open');
+    document.getElementById('envelopeNextRow').style.display = 'flex';
+  }
+
+  // ambient floating hearts
+  const ambient = document.getElementById('ambient');
+  const hearts = ['🤍','💗','❤','✨'];
+  for(let i=0;i<16;i++){
+    const s = document.createElement('span');
+    s.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+    s.style.left = Math.random()*100+'vw';
+    s.style.animationDuration = (10+Math.random()*12)+'s';
+    s.style.animationDelay = (Math.random()*10)+'s';
+    s.style.fontSize = (12+Math.random()*14)+'px';
+    ambient.appendChild(s);
+  }
+</script>
+
+</body>
+</html>
