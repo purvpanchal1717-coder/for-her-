@@ -128,6 +128,75 @@
   }
   .btn-secondary:hover{background:var(--rose);color:#fff;}
 
+  .burst-heart{
+    position:fixed;
+    pointer-events:none;
+    font-size:1.1rem;
+    z-index:30;
+    opacity:0;
+    animation:burstFly 2.5s cubic-bezier(0.22,0.61,0.36,1) forwards;
+  }
+  @keyframes burstFly{
+    0%{opacity:0;transform:translate(0,0) scale(0.4) rotate(0deg);}
+    14%{opacity:1;transform:translate(calc(var(--bx)*0.12),calc(var(--by)*0.08 - 24px)) scale(0.85) rotate(calc(var(--br)*0.2));}
+    60%{opacity:1;transform:translate(calc(var(--bx)*0.62),calc(var(--by)*0.58)) scale(1.05) rotate(calc(var(--br)*0.65));}
+    100%{opacity:0;transform:translate(var(--bx),var(--by)) scale(1) rotate(var(--br));}
+  }
+
+  .bloom-sequence{
+    position:relative;
+    width:220px;
+    height:220px;
+    margin-bottom:0.6rem;
+  }
+  .bloom-emoji{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:5rem;
+    opacity:0;
+  }
+  @keyframes bloomPop{
+    0%{opacity:0;transform:scale(0.3) rotate(-8deg);}
+    45%{opacity:1;transform:scale(1.15) rotate(3deg);}
+    65%{transform:scale(0.96) rotate(-1deg);}
+    80%{transform:scale(1.03) rotate(0deg);opacity:1;}
+    92%{opacity:1;}
+    100%{opacity:0;transform:scale(1) rotate(0deg);}
+  }
+  .bouquet-final{
+    opacity:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .typewriter-wrap{
+    min-height:2.4rem;
+    display:flex;
+    align-items:center;
+  }
+  .typewriter{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:1.4rem;
+    color:var(--deep-rose);
+  }
+  .typewriter-cursor{
+    display:inline-block;
+    width:2px;
+    height:1.2rem;
+    background:var(--deep-rose);
+    margin-left:3px;
+    animation:cursorBlink 0.8s steps(1) infinite;
+    vertical-align:middle;
+  }
+  @keyframes cursorBlink{
+    0%,49%{opacity:1;}
+    50%,100%{opacity:0;}
+  }
+
   .cat-emoji{
     font-size:3.4rem;
     margin-bottom:0.6rem;
@@ -146,6 +215,26 @@
     cursor:pointer;
     margin-bottom:2rem;
     perspective:1200px;
+    animation:envelopeFloat 3.2s ease-in-out infinite;
+  }
+  @keyframes envelopeFloat{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-10px);}
+  }
+  .sparkle{
+    position:fixed;
+    pointer-events:none;
+    font-size:1rem;
+    color:#ffd77a;
+    opacity:0;
+    z-index:25;
+    animation:sparkleOut 2.1s cubic-bezier(0.22,0.61,0.36,1) forwards;
+  }
+  @keyframes sparkleOut{
+    0%{opacity:0;transform:translate(0,0) scale(0.35) rotate(0deg);}
+    16%{opacity:1;transform:translate(calc(var(--sx)*0.1),calc(var(--sy)*0.1)) scale(0.8) rotate(20deg);}
+    65%{opacity:1;transform:translate(calc(var(--sx)*0.65),calc(var(--sy)*0.65)) scale(1.1) rotate(90deg);}
+    100%{opacity:0;transform:translate(var(--sx),var(--sy)) scale(1.2) rotate(140deg);}
   }
   .envelope-body{
     position:absolute;
@@ -153,6 +242,7 @@
     background:linear-gradient(145deg,#ffd3e0,#ffb9cf);
     border-radius:10px;
     box-shadow:0 18px 40px rgba(199,55,100,0.25);
+    z-index:1;
   }
   .envelope-flap{
     position:absolute;
@@ -160,9 +250,10 @@
     height:0;
     border-left:140px solid transparent;
     border-right:140px solid transparent;
-    border-top:105px solid #ffc2d4;
-    transform-origin:top;
+    border-top:100px solid #ffc2d4;
+    transform-origin:top center;
     transition:transform 0.9s cubic-bezier(.68,-0.4,.27,1.4);
+    backface-visibility:hidden;
     z-index:3;
   }
   .envelope-wrap.open .envelope-flap{
@@ -170,27 +261,32 @@
   }
   .envelope-heart{
     position:absolute;
-    top:40%;
+    top:34%;
     left:50%;
     transform:translate(-50%,-50%);
-    font-size:1.6rem;
+    font-size:1.5rem;
     z-index:4;
     color:var(--deep-rose);
+    transition:opacity 0.3s ease;
+  }
+  .envelope-wrap.open .envelope-heart{
+    opacity:0;
   }
   .letter-paper{
     position:absolute;
-    left:12px;right:12px;
-    bottom:8px;
-    top:40px;
+    left:14px;right:14px;
+    bottom:12px;
+    top:36px;
     background:var(--cream);
     border-radius:6px;
-    box-shadow:0 6px 18px rgba(0,0,0,0.12);
+    box-shadow:0 6px 18px rgba(0,0,0,0.15);
     transform:translateY(0);
-    transition:transform 0.9s ease 0.3s, opacity 0.9s ease 0.3s;
-    z-index:2;
+    z-index:0;
+    transition:transform 0.85s ease 0.35s, z-index 0s 0.35s;
   }
   .envelope-wrap.open .letter-paper{
-    transform:translateY(-130px) scale(1.05);
+    transform:translateY(-150px) scale(1.05);
+    z-index:6;
   }
   .envelope-hint{
     font-size:0.9rem;
@@ -343,6 +439,66 @@
     from{transform:translateY(10px);}
   }
 
+  .constellation-scene{
+    background:radial-gradient(ellipse at top, #171b3d 0%, #050614 75%);
+  }
+  .constellation-scene .final-eyebrow,
+  .constellation-scene .final-line{color:#fdeef2;}
+  .sky{
+    position:relative;
+    width:min(88vw,420px);
+    height:min(56vh,400px);
+    margin-bottom:1.6rem;
+  }
+  .bg-star{
+    position:absolute;
+    background:#fff;
+    border-radius:50%;
+    opacity:0.5;
+    animation:twinkleSmall 3s ease-in-out infinite;
+  }
+  @keyframes twinkleSmall{
+    0%,100%{opacity:0.15;}
+    50%{opacity:0.85;}
+  }
+  .fav-star{
+    position:absolute;
+    top:22%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:2.1rem;
+    cursor:pointer;
+    color:#fff6d8;
+    text-shadow:0 0 14px #ffe9a3, 0 0 26px #ffd977;
+    animation:favPulse 2s ease-in-out infinite;
+    z-index:3;
+    transition:opacity 0.5s ease;
+  }
+  @keyframes favPulse{
+    0%,100%{opacity:0.65;transform:translate(-50%,-50%) scale(1);}
+    50%{opacity:1;transform:translate(-50%,-50%) scale(1.18);}
+  }
+  .heart-star{
+    position:absolute;
+    width:6px;
+    height:6px;
+    background:#ffd9e6;
+    border-radius:50%;
+    box-shadow:0 0 8px 2px rgba(255,182,206,0.85);
+    opacity:0;
+    transform:scale(0);
+    transition:opacity 0.5s ease, transform 0.5s ease;
+  }
+  .heart-star.show{opacity:1;transform:scale(1);}
+  .constellation-caption{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:1.3rem;
+    color:#fdeef2;
+    letter-spacing:0.02em;
+    min-height:1.8em;
+  }
+
   .progress-dots{
     position:fixed;
     bottom:22px;
@@ -379,9 +535,9 @@
   <section class="scene active" id="scene-landing">
     <div class="eyebrow">for Chahna</div>
     <h1>I made something for you. ❤️</h1>
-    <p class="body-text">I made something for you. ❤️ Open it with a smile... I hope it makes you smile even more.</p>
+    <p class="body-text">Open it with a smile... I hope it makes you smile even more.</p>
     <div class="btn-row">
-      <button class="btn-primary" onclick="goTo('scene-envelope')">Yes</button>
+      <button class="btn-primary" id="yesBtn" onclick="handleYes(event)">Yes</button>
       <button class="btn-secondary" onclick="goTo('scene-no')">No</button>
     </div>
   </section>
@@ -396,7 +552,7 @@
 
   <!-- 3. Envelope -->
   <section class="scene" id="scene-envelope">
-    <div class="eyebrow">just for you 🤍</div>
+    <div class="eyebrow">open when ready</div>
     <h1 style="margin-bottom:1.4rem;">Someone has a letter waiting for you... 🤍</h1>
     <div class="envelope-wrap" id="envelopeWrap" onclick="openEnvelope()">
       <div class="envelope-flap"></div>
@@ -446,31 +602,48 @@
 
   <!-- 6. Bouquet -->
   <section class="scene" id="scene-bouquet">
-    <svg class="bouquet-svg" viewBox="0 0 260 300" xmlns="http://www.w3.org/2000/svg">
-      <line x1="130" y1="180" x2="130" y2="290" stroke="#c98a63" stroke-width="6" stroke-linecap="round"/>
-      <line x1="130" y1="200" x2="100" y2="270" stroke="#c98a63" stroke-width="5" stroke-linecap="round"/>
-      <line x1="130" y1="210" x2="160" y2="275" stroke="#c98a63" stroke-width="5" stroke-linecap="round"/>
-      <g>
-        <circle cx="80" cy="120" r="26" fill="#f7a8c4"/>
-        <circle cx="60" cy="150" r="22" fill="#f28cae"/>
-        <circle cx="110" cy="150" r="24" fill="#f7a8c4"/>
-        <circle cx="150" cy="115" r="27" fill="#f28cae"/>
-        <circle cx="180" cy="145" r="23" fill="#f7a8c4"/>
-        <circle cx="130" cy="90" r="25" fill="#e75480"/>
-        <circle cx="130" cy="150" r="20" fill="#fff0f4"/>
-        <circle cx="80" cy="120" r="9" fill="#fff5f8"/>
-        <circle cx="150" cy="115" r="9" fill="#fff5f8"/>
-        <circle cx="60" cy="150" r="8" fill="#ffe3ec"/>
-        <circle cx="180" cy="145" r="8" fill="#ffe3ec"/>
-        <circle cx="130" cy="90" r="9" fill="#ffd6e2"/>
-      </g>
-      <path d="M40 175 Q130 220 220 175 L210 195 Q130 235 50 195 Z" fill="#ffc2d4"/>
-    </svg>
-    <div class="note-card">"I love you." 🤍</div>
-    <button class="btn-primary" style="margin-top:2rem;" onclick="goToFinal()">Next</button>
+    <div class="bloom-sequence" id="bloomSequence">
+      <span class="bloom-emoji">🌸</span>
+      <span class="bloom-emoji">🌹</span>
+      <span class="bloom-emoji">🌷</span>
+      <span class="bloom-emoji">💐</span>
+    </div>
+    <div class="bouquet-final" id="bouquetFinal">
+      <svg class="bouquet-svg" viewBox="0 0 260 300" xmlns="http://www.w3.org/2000/svg">
+        <line x1="130" y1="180" x2="130" y2="290" stroke="#c98a63" stroke-width="6" stroke-linecap="round"/>
+        <line x1="130" y1="200" x2="100" y2="270" stroke="#c98a63" stroke-width="5" stroke-linecap="round"/>
+        <line x1="130" y1="210" x2="160" y2="275" stroke="#c98a63" stroke-width="5" stroke-linecap="round"/>
+        <g>
+          <circle cx="80" cy="120" r="26" fill="#f7a8c4"/>
+          <circle cx="60" cy="150" r="22" fill="#f28cae"/>
+          <circle cx="110" cy="150" r="24" fill="#f7a8c4"/>
+          <circle cx="150" cy="115" r="27" fill="#f28cae"/>
+          <circle cx="180" cy="145" r="23" fill="#f7a8c4"/>
+          <circle cx="130" cy="90" r="25" fill="#e75480"/>
+          <circle cx="130" cy="150" r="20" fill="#fff0f4"/>
+          <circle cx="80" cy="120" r="9" fill="#fff5f8"/>
+          <circle cx="150" cy="115" r="9" fill="#fff5f8"/>
+          <circle cx="60" cy="150" r="8" fill="#ffe3ec"/>
+          <circle cx="180" cy="145" r="8" fill="#ffe3ec"/>
+          <circle cx="130" cy="90" r="9" fill="#ffd6e2"/>
+        </g>
+        <path d="M40 175 Q130 220 220 175 L210 195 Q130 235 50 195 Z" fill="#ffc2d4"/>
+      </svg>
+      <div class="typewriter-wrap"><span class="typewriter" id="bouquetTypewriter"></span><span class="typewriter-cursor" id="bouquetCursor"></span></div>
+      <button class="btn-primary" style="margin-top:2rem;" onclick="goTo('scene-constellation')">Next</button>
+    </div>
   </section>
 
-  <!-- 7. Final -->
+  <!-- 7. Constellation -->
+  <section class="scene constellation-scene" id="scene-constellation">
+    <div class="sky" id="sky">
+      <div class="fav-star" id="favStar" onclick="revealConstellation()">⭐</div>
+    </div>
+    <div class="constellation-caption" id="constellationCaption">Find my favourite star.</div>
+    <button class="btn-primary" id="constellationNextBtn" style="display:none;margin-top:2rem;" onclick="goToFinal()">Next</button>
+  </section>
+
+  <!-- 8. Final -->
   <section class="scene final-scene" id="scene-final">
     <div class="final-heart">❤️</div>
     <div class="final-eyebrow">One last thing...</div>
@@ -489,7 +662,7 @@
 <div class="progress-dots" id="dots"></div>
 
 <script>
-  const order = ['scene-landing','scene-envelope','scene-letter','scene-wall','scene-bouquet','scene-final'];
+  const order = ['scene-landing','scene-envelope','scene-letter','scene-wall','scene-bouquet','scene-constellation','scene-final'];
   const dotsEl = document.getElementById('dots');
   order.forEach((id,i)=>{
     const d = document.createElement('span');
@@ -509,6 +682,8 @@
     document.querySelectorAll('.scene').forEach(s=>s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     updateDots(id);
+    if(id === 'scene-bouquet') startBloom();
+    if(id === 'scene-constellation') setupSky();
   }
 
   function goToFinal(){
@@ -520,11 +695,185 @@
     }, 1300);
   }
 
+  // ---- Heart explosion on "Yes" (covers full screen) ----
+  function handleYes(e){
+    const rect = e.target.getBoundingClientRect();
+    const cx = rect.left + rect.width/2;
+    const cy = rect.top + rect.height/2;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const maxDist = Math.hypot(vw, vh);
+    const hearts = ['❤️','💗','💕','💖','🤍'];
+    const count = 90;
+    for(let i=0;i<count;i++){
+      setTimeout(()=>{
+        const h = document.createElement('span');
+        h.className = 'burst-heart';
+        h.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+        h.style.left = cx+'px';
+        h.style.top = cy+'px';
+        const angle = Math.random()*Math.PI*2;
+        const dist = maxDist*0.25 + Math.random()*maxDist*0.55;
+        h.style.setProperty('--bx', (Math.cos(angle)*dist)+'px');
+        h.style.setProperty('--by', (Math.sin(angle)*dist + 40)+'px');
+        h.style.setProperty('--br', (Math.random()*100-50)+'deg');
+        h.style.fontSize = (14+Math.random()*20)+'px';
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(), 2700);
+      }, i*16);
+    }
+    setTimeout(()=>goTo('scene-envelope'), 1500);
+  }
+
+  // ---- Envelope open: sparkles + sound ----
+  function playPaperSound(){
+    try{
+      const ctx = new (window.AudioContext||window.webkitAudioContext)();
+      const bufferSize = ctx.sampleRate * 0.4;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for(let i=0;i<bufferSize;i++){
+        data[i] = (Math.random()*2-1) * (1 - i/bufferSize);
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 2200;
+      filter.Q.value = 0.7;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.5, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      noise.connect(filter).connect(gain).connect(ctx.destination);
+      noise.start();
+    }catch(err){ /* audio not available, fail silently */ }
+  }
+
+  function spawnSparkles(wrap){
+    const rect = wrap.getBoundingClientRect();
+    const cx = rect.left + rect.width/2;
+    const cy = rect.top + rect.height/2;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const maxDist = Math.hypot(vw, vh);
+    const count = 55;
+    for(let i=0;i<count;i++){
+      setTimeout(()=>{
+        const s = document.createElement('span');
+        s.className = 'sparkle';
+        s.textContent = Math.random()>0.25 ? '✨' : '⭐';
+        s.style.left = (cx + (Math.random()*60-30)) + 'px';
+        s.style.top = (cy + (Math.random()*60-30)) + 'px';
+        const angle = Math.random()*Math.PI*2;
+        const dist = maxDist*0.2 + Math.random()*maxDist*0.5;
+        s.style.setProperty('--sx',(Math.cos(angle)*dist)+'px');
+        s.style.setProperty('--sy',(Math.sin(angle)*dist - 40)+'px');
+        s.style.fontSize = (10+Math.random()*12)+'px';
+        document.body.appendChild(s);
+        setTimeout(()=>s.remove(), 2300);
+      }, i*18);
+    }
+  }
+
   function openEnvelope(){
     const wrap = document.getElementById('envelopeWrap');
     if(wrap.classList.contains('open')) return;
     wrap.classList.add('open');
+    wrap.style.animation = 'none';
+    playPaperSound();
+    spawnSparkles(wrap);
     document.getElementById('envelopeNextRow').style.display = 'flex';
+  }
+
+  // ---- Bouquet bloom sequence ----
+  function startBloom(){
+    const seq = document.getElementById('bloomSequence');
+    const final = document.getElementById('bouquetFinal');
+    const tw = document.getElementById('bouquetTypewriter');
+    const cursor = document.getElementById('bouquetCursor');
+    tw.textContent = '';
+    cursor.style.display = 'none';
+    seq.style.display = 'block';
+    final.style.transition = 'none';
+    final.style.opacity = 0;
+    const delays = [0, 0.85, 1.7, 2.55];
+    seq.querySelectorAll('.bloom-emoji').forEach((el,i)=>{
+      el.style.animation = 'none';
+      void el.offsetWidth;
+      el.style.animation = `bloomPop 0.9s ease ${delays[i]}s forwards`;
+    });
+    setTimeout(()=>{
+      seq.style.display = 'none';
+      final.style.transition = 'opacity 1s ease';
+      final.style.opacity = 1;
+      cursor.style.display = 'inline-block';
+      typeWriter(tw, '"I love you." 🤍', 90);
+    }, 3500);
+  }
+
+  function typeWriter(el, text, speed){
+    let i = 0;
+    const timer = setInterval(()=>{
+      el.textContent += text.charAt(i);
+      i++;
+      if(i >= text.length) clearInterval(timer);
+    }, speed);
+  }
+
+  // ---- Constellation ----
+  let skyReady = false;
+  function setupSky(){
+    if(skyReady) return;
+    skyReady = true;
+    const sky = document.getElementById('sky');
+    for(let i=0;i<70;i++){
+      const s = document.createElement('div');
+      s.className = 'bg-star';
+      const size = 1 + Math.random()*2;
+      s.style.width = size+'px';
+      s.style.height = size+'px';
+      s.style.left = Math.random()*100+'%';
+      s.style.top = Math.random()*100+'%';
+      s.style.animationDelay = (Math.random()*3)+'s';
+      sky.appendChild(s);
+    }
+  }
+
+  function revealConstellation(){
+    const favStar = document.getElementById('favStar');
+    const sky = document.getElementById('sky');
+    const caption = document.getElementById('constellationCaption');
+    favStar.style.opacity = 0;
+    favStar.style.pointerEvents = 'none';
+
+    const w = sky.clientWidth, h = sky.clientHeight;
+    const cx = w/2, cy = h/2 + 10;
+    const scale = Math.min(w,h)/34;
+    const points = [];
+    const count = 90;
+    for(let i=0;i<count;i++){
+      const t = (i/count) * Math.PI * 2;
+      const x = 16*Math.pow(Math.sin(t),3);
+      const y = 13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t);
+      points.push({x: cx + x*scale, y: cy - y*scale});
+    }
+    points.forEach((p,i)=>{
+      const star = document.createElement('div');
+      star.className = 'heart-star';
+      star.style.left = p.x+'px';
+      star.style.top = p.y+'px';
+      sky.appendChild(star);
+      setTimeout(()=>star.classList.add('show'), 15*i);
+    });
+
+    caption.style.transition = 'opacity 0.6s ease';
+    caption.style.opacity = 0;
+    setTimeout(()=>{
+      caption.textContent = 'I found mine a long time ago. ❤️';
+      caption.style.opacity = 1;
+    }, count*15 + 400);
+
+    setTimeout(()=>{
+      document.getElementById('constellationNextBtn').style.display = 'inline-block';
+    }, count*15 + 1200);
   }
 
   // ambient floating hearts
