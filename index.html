@@ -29,6 +29,7 @@
     width:100vw;
     height:100vh;
     overflow:hidden;
+    perspective:1200px;
   }
   /* floating ambient hearts */
   .ambient{
@@ -539,6 +540,7 @@
     padding:0.5rem;
     text-align:center;
     box-shadow:0 8px 18px rgba(199,55,100,0.18);
+    overflow-y:auto;
   }
   .reason-front{
     background:linear-gradient(145deg,#ffd3e0,#ffb9cf);
@@ -635,11 +637,11 @@
     animation:origamiFold 2.4s ease forwards;
   }
   @keyframes origamiFold{
-    0%{transform:translate(-50%,-50%) scale(1) rotateX(0) rotateY(0);}
-    30%{transform:translate(-50%,-50%) scale(1.08) rotateX(20deg) rotateY(25deg);box-shadow:0 0 80px rgba(255,182,206,1);}
-    60%{transform:translate(-50%,-50%) scale(0.55) rotateX(200deg) rotateY(200deg);box-shadow:0 0 100px rgba(255,150,190,1);}
-    85%{transform:translate(-50%,-50%) scale(0.15) rotateX(380deg) rotateY(380deg);opacity:1;}
-    100%{transform:translate(-50%,-50%) scale(0.02) rotateX(400deg) rotateY(400deg);opacity:0;}
+    0%{transform:translate(-50%,-50%) scale(1) rotateX(0) rotateY(0);box-shadow:0 0 40px rgba(255,182,206,0.85), 0 20px 50px rgba(199,55,100,0.35);}
+    30%{transform:translate(-50%,-50%) scale(1.1) rotateX(35deg) rotateY(45deg);box-shadow:0 0 90px rgba(255,105,155,1), 0 0 140px rgba(199,55,100,0.6);}
+    60%{transform:translate(-50%,-50%) scale(0.55) rotateX(220deg) rotateY(220deg);box-shadow:0 0 110px rgba(231,84,128,1), 0 0 60px rgba(199,55,100,0.9);}
+    85%{transform:translate(-50%,-50%) scale(0.15) rotateX(400deg) rotateY(400deg);opacity:1;box-shadow:0 0 60px rgba(199,55,100,0.8);}
+    100%{transform:translate(-50%,-50%) scale(0.02) rotateX(420deg) rotateY(420deg);opacity:0;}
   }
 
   .reasons-finale{
@@ -851,7 +853,11 @@
   .progress-dots{display:none;}
 
   @media (max-width:560px){
-    .reasons-grid{grid-template-columns:repeat(3,1fr);max-height:50vh;}
+    .reasons-grid{grid-template-columns:repeat(2,1fr);max-height:58vh;gap:0.7rem;}
+    .reason-card{aspect-ratio:3/3.8;}
+    .reason-front{font-size:0.95rem;}
+    .reason-back{font-size:0.92rem;padding:0.65rem;}
+    .reason-back strong{font-size:0.8rem;}
     .envelope-wrap{width:220px;height:150px;}
     .envelope-flap{border-left-width:110px;border-right-width:110px;border-top-width:82px;}
   }
